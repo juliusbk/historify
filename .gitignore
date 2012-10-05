@@ -1,5 +1,6 @@
 *.py[co]
 /venv
+*.swp
 # Packages
 *.egg
 *.egg-info
