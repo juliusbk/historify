@@ -1,0 +1,46 @@
+<head>
+    <title>Historify Your Face</title>
+
+    <script src="/static/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript"
+        src="/static/seadragon-min.js"></script>
+</head>
+
+<body>
+    <div id="loader">Loading... </div>
+        
+    <br>
+
+    <script>
+        $(document).ready(function() {
+        $("#container").hide();
+        $.ajax({
+          url: "/process/?url={{url}}",
+          cache: false
+          }).done(function( html_path ) {
+        var viewer = null;
+        viewer = new Seadragon.Viewer("container");
+        viewer.openDzi( html_path );
+
+        $("#loader").hide("slow");
+        $("#container").show();
+
+        });
+    });
+</script>
+
+
+    <style type="text/css">
+        #container
+        {
+            width: 500px;
+            height: 400px;
+            background-color: black;
+            border: 1px solid black;
+            color: white;   /* for error messages, etc. */
+        }
+    </style>
+
+    <div id="container"></div>
+
+</body>
