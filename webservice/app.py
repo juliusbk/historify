@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request
 import urllib, uuid, os
+import make_image
+import PIL
 app = Flask(__name__)
 
 @app.route("/")
@@ -14,14 +16,11 @@ def loader():
 @app.route("/process/")
 def process():
     url = request.args.get("url", "")
-    #process(tag)
-    f = urllib.urlopen(url)
+
+    PIL_image = make_image.make_image(url, resize=True, size=15000)
     fid = str(uuid.uuid1())
     path = 'static/dzi_converter/files/'+fid
-    f_local = open(path+'.jpg','w')
-    f_local.write( f.read() )
-    f_local.close()
-
+    PIL_image.save(path+'.jpg')
     os.system("python static/dzi_converter/seadragon.py "+path+'.jpg')
 
     path = "/"+path+".dzi"
