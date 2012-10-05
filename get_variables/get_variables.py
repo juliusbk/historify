@@ -1,21 +1,57 @@
-from PIL import Image
+from PIL import Image, ImageOps
 import urllib, cStringIO
 from math import sqrt
-import pickle
+import pickle, os
 
 ##### MAIN CLASS #####
 class image:
-    def __init__(self, url):
+    def __init__(self, source, size=100, **kwargs):
         #Define:
-        self.size = 100
+        self.size = size
 
+        self.options = { 'type': 'url',
+                         'resize': True,
+                         'grayscale': True,
+                         'cache': False, }
+
+        # Merge options and kwargs
+        for key, val in kwargs.items():
+            self.options[key] = val
+
+        if self.options['type'] == 'localfile':
+        # Lccal file
+            self.original = Image.open(source)
+        elif self.options['type'] == 'image':
+        # Lccal file
+            self.original = source
+        elif self.options['type'] == 'id':
+            i_id = source
+            if self.options['cache']:
+                filepath = 'cache/%d' % i_id
+                if not os.path.exists(filepath):
+                    self.url = parse_id(source)
+                    f = urllib.urlopen(self.url)
+                    open(filepath, 'w').write(f.read())
+                self.original = Image.open(filepath)
+            else:
+                self.url = self.parse_id(source)
+                f = urllib.urlopen(self.url)
+                self.original = Image.open( cStringIO.StringIO(f.read()) )
+        else:
+        # if self.options['type'] == 'url':
         #Download:
-        self.url = url
-        f = urllib.urlopen(url)
-        self.original = Image.open( cStringIO.StringIO(f.read()) )
+            self.url = source
+            f = urllib.urlopen(self.url)
+            self.original = Image.open( cStringIO.StringIO(f.read()) )
+
+        if self.options['grayscale']:
+            self.original = ImageOps.grayscale(self.original)
 
         # Now resize and crop:
-        self.img = self.processed()
+        if self.options['resize']:
+            self.img = self.processed()
+        else:
+            self.img = self.original
 
         #And analyze:
         self.make_histograms()
@@ -37,7 +73,7 @@ class image:
             right = self.size + left
             upper = 0
             lower = self.size
-        
+
         img = self.original.resize((new_width, new_height))
         img = img.crop( (left, upper, right, lower) )
 
