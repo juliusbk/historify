@@ -5,6 +5,7 @@
 *.egg
 *.egg-info
 dist
+cache/*
 build
 eggs
 parts
@@ -16,6 +17,8 @@ develop-eggs
 
 # Installer logs
 pip-log.txt
+
+*.jpg
 
 # Unit test / coverage reports
 .coverage
