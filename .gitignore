@@ -6,7 +6,10 @@
 *.egg-info
 dist
 cache/*
-static/dzi_converter/files/*
+webservice/cache/*
+!webservice/cache/GIT_FIND_ME
+webservice/static/dzi_converter/files/*
+!webservice/static/dzi_converter/files/GIT_FIND_ME
 build
 eggs
 parts
